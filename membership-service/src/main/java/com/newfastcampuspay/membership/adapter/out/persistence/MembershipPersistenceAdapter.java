@@ -1,0 +1,40 @@
+package com.newfastcampuspay.membership.adapter.out.persistence;
+
+import com.newfastcampuspay.membership.application.port.out.FindMembershipPort;
+import com.newfastcampuspay.membership.application.port.out.RegisterMembershipPort;
+import com.newfastcampuspay.membership.domain.Membership;
+import com.newfastcampuspay.membership.domain.Membership.MembershipAddress;
+import com.newfastcampuspay.membership.domain.Membership.MembershipEmail;
+import com.newfastcampuspay.membership.domain.Membership.MembershipId;
+import com.newfastcampuspay.membership.domain.Membership.MembershipIsCorp;
+import com.newfastcampuspay.membership.domain.Membership.MembershipIsValid;
+import com.newfastcampuspay.membership.domain.Membership.MembershipName;
+import common.PersistenceAdapter;
+import lombok.RequiredArgsConstructor;
+
+@PersistenceAdapter
+@RequiredArgsConstructor
+public class MembershipPersistenceAdapter implements RegisterMembershipPort, FindMembershipPort {
+
+    private final SpringDataMembershipRepository membershipRepository;
+
+    @Override
+    public MembershipJpaEntity createMembership(MembershipName membershipName, MembershipEmail membershipEmail,
+                                 MembershipAddress membershipAddress, MembershipIsValid membershipIsValid,
+                                 MembershipIsCorp membershipIsCorp) {
+        return membershipRepository.save(
+                new MembershipJpaEntity(
+                        membershipName.getNameValue()
+                        , membershipEmail.getEmailValue()
+                        , membershipAddress.getAddressValue()
+                        , membershipIsValid.isValidValue()
+                        , membershipIsCorp.isCorpValue()
+                )
+        );
+    }
+
+    @Override
+    public MembershipJpaEntity findMembership(MembershipId membershipId) {
+        return membershipRepository.getById(Long.valueOf(membershipId.getMembershipId()));
+    }
+}
