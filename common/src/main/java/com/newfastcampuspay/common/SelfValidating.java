@@ -1,4 +1,4 @@
-package common;
+package com.newfastcampuspay.common;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

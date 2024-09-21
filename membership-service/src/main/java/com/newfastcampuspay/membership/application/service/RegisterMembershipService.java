@@ -1,5 +1,6 @@
 package com.newfastcampuspay.membership.application.service;
 
+import com.newfastcampuspay.common.UseCase;
 import com.newfastcampuspay.membership.adapter.out.persistence.MembershipJpaEntity;
 import com.newfastcampuspay.membership.adapter.out.persistence.MembershipMapper;
 import com.newfastcampuspay.membership.application.port.in.RegisterMembershipCommand;
@@ -11,7 +12,6 @@ import com.newfastcampuspay.membership.domain.Membership.MembershipEmail;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsCorp;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsValid;
 import com.newfastcampuspay.membership.domain.Membership.MembershipName;
-import common.UseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

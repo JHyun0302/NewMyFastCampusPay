@@ -1,5 +1,6 @@
 package com.newfastcampuspay.membership.adapter.out.persistence;
 
+import com.newfastcampuspay.common.PersistenceAdapter;
 import com.newfastcampuspay.membership.application.port.out.FindMembershipPort;
 import com.newfastcampuspay.membership.application.port.out.ModifyMembershipPort;
 import com.newfastcampuspay.membership.application.port.out.RegisterMembershipPort;
@@ -10,7 +11,6 @@ import com.newfastcampuspay.membership.domain.Membership.MembershipId;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsCorp;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsValid;
 import com.newfastcampuspay.membership.domain.Membership.MembershipName;
-import common.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter

@@ -1,9 +1,9 @@
 package com.newfastcampuspay.membership.adapter.in.web;
 
+import com.newfastcampuspay.common.WebAdapter;
 import com.newfastcampuspay.membership.application.port.in.RegisterMembershipCommand;
 import com.newfastcampuspay.membership.application.port.in.RegisterMembershipUseCase;
 import com.newfastcampuspay.membership.domain.Membership;
-import common.WebAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -32,7 +32,6 @@ dependencies {
 	testImplementation 'junit:junit:4.13.1'
 
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -51,6 +50,9 @@ dependencies {
 
 	//DB
 	runtimeOnly 'com.h2database:h2'
+
+	//Common 모듈
+	implementation project(path: ':common')
 }
 
 tasks.named('test') {
