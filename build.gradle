@@ -9,7 +9,7 @@ apply plugin: 'java-library'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group = 'com.example'
+group = 'com.newfastcampuspay.membership'
 version = '0.0.1-SNAPSHOT'
 
 java {
