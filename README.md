@@ -40,3 +40,36 @@
 
 
 ##  Hexagonal Project 패키지 구조 설계
+fastcampus-pay
+  ㄴ membership-service
+    ㄴ src.main
+      ㄴ java
+        ㄴ com.fastcampuspay.membership      // 각 서비스 별 최상위 패키지
+          ㄴ adapter                        // adapter 는 외부 시스템과의 상호작용
+            ㄴ in.web
+            ㄴ out.persistence
+          ㄴ application  
+            ㄴ port                         // port 는 비즈니스 로직(app)과 직접 통신하는 인터페이스
+              ㄴ in
+              ㄴ out
+            ㄴ service                      // service 는 port 인터페이스의 실제 비즈니스 로직의 구현체
+          ㄴ domain                        // domian 은 일반적인 모델 정보를 저장하는 패키지
+        ㄴ build.gradle
+      ㄴ test
+
+
+## Membership 서비스 정의, DB 설계
+- fastcampus-pay 라는 비즈니스에서 제공하는 멤버십 서비스로서, 패캠 페이에 가입하는 개인/법인 고객의 정보를 **소유**하고 관련 **정보의 변경에 대한 의무**를 가진 서비스
+
+- Membership (개인/법인)
+
+| membershipId | string  |개별 멤버(개인/법인)의 Unique한 Id|
+| name         | string  |개별 멤버(개인/법인) 이름|
+| email        | string  |개별 멤버(개인/법인) 이메일 주소|
+| address      | string  |개별 멤버(개인/법인) 주소|
+| isValid      | boolean |개별 멤버(개인/법인)의 현재 유효한 상태 여부|
+| isCorp       | boolean |개별 멤버가 법인 고객인지에 대한 여부|
+
+
+
+
