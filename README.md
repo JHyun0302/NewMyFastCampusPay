@@ -64,6 +64,7 @@ fastcampus-pay
 - Membership (개인/법인)
 
 | membershipId | string  |개별 멤버(개인/법인)의 Unique한 Id|
+|--------------|---------|------------------------------------|
 | name         | string  |개별 멤버(개인/법인) 이름|
 | email        | string  |개별 멤버(개인/법인) 이메일 주소|
 | address      | string  |개별 멤버(개인/법인) 주소|
