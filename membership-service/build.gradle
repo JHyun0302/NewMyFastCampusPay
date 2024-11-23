@@ -56,6 +56,7 @@ dependencies {
 	//DB
 //	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	testRuntimeOnly 'com.h2database:h2'
 
 	//Common 모듈
 	implementation project(path: ':common')
