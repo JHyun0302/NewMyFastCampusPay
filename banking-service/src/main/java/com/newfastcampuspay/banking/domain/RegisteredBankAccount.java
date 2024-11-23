@@ -33,8 +33,8 @@ public class RegisteredBankAccount {
     ) {
 
         return new RegisteredBankAccount(
-                registeredBankAccountId.registeredBankAcountId,
-                membershipId.mebershipId,
+                registeredBankAccountId.registeredBankAccountId,
+                membershipId.membershipId,
                 bankName.bankName,
                 bankAccountNumber.bankAccountNumber,
                 linkedStatusIsValid.linkedStatusIsValid
@@ -44,17 +44,17 @@ public class RegisteredBankAccount {
     @Value
     public static class RegisteredBankAccountId {
         public RegisteredBankAccountId(String value) {
-            this.registeredBankAcountId = value;
+            this.registeredBankAccountId = value;
         }
-        String registeredBankAcountId;
+        String registeredBankAccountId;
     }
 
     @Value
     public static class MembershipId {
         public MembershipId(String value) {
-            this.mebershipId = value;
+            this.membershipId = value;
         }
-        String mebershipId;
+        String membershipId;
     }
 
     @Value
