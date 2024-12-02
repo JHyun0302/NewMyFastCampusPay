@@ -40,6 +40,7 @@
 
 
 ##  Hexagonal Project 패키지 구조 설계
+```
 fastcampus-pay
   ㄴ membership-service
     ㄴ src.main
@@ -56,7 +57,20 @@ fastcampus-pay
           ㄴ domain                        // domian 은 일반적인 모델 정보를 저장하는 패키지
         ㄴ build.gradle
       ㄴ test
-
+```
+## MSA 아키텍처를 가지는 서비스 설명
+- Membership Service(멤버십 서비스)
+  - 고객(회원/가맹점)을 관리하고 계좌 등록, 인증 등 패캠페이의 고객을 관리하고 편의 기능을 제공하는 서비스
+- Banking Service(뱅킹 서비스)
+  - 외부 은행과의 직접적인 통신을 담당하고, 펌뱅킹 계약이나 수수료 관리 등 외부 은행 사용과 관련된 모든 기능을 제공하는 서비스
+- Money Service(머니 서비스)
+  - 고객의 선불 충전 금액(머니)을 관리하고, 이에 대해 다양한 쿼리를 제공할 수 있는 서비스
+- Remittance Service(송금 서비스)
+  - "송금"이라는 비즈니스 과정 전체를 관리하고, 트랜잭션에 대한 책임을 가지는 서비스
+- Payment Service(결제 서비스)
+  - "결제"이라는 비즈니스 과정 전체를 관리하고, 트랜잭션에 대한 책임을 가지는 서비스
+- Settlement Service(정산 서비스)
+  - 주기적으로 정산 작업을 진행하며, 여기서 생기는 모든 과정을 관리하는 서비스     
 
 ## Membership 서비스 정의, DB 설계
 - fastcampus-pay 라는 비즈니스에서 제공하는 멤버십 서비스로서, 패캠 페이에 가입하는 개인/법인 고객의 정보를 **소유**하고 관련 **정보의 변경에 대한 의무**를 가진 서비스
