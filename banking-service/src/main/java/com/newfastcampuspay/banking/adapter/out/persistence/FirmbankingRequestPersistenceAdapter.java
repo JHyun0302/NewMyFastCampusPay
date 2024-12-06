@@ -1,8 +1,10 @@
 package com.newfastcampuspay.banking.adapter.out.persistence;
 
+import com.newfastcampuspay.banking.application.port.out.FindFirmbankingPort;
 import com.newfastcampuspay.banking.application.port.out.RegisterBankAccountPort;
 import com.newfastcampuspay.banking.application.port.out.RequestFirmbankingPort;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest;
+import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingRequestId;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingStatus;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FromBankAccountNumber;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FromBankName;
@@ -19,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingPort {
+public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingPort, FindFirmbankingPort {
 
     private final SpringDataFirmbankingRequestRepository firmbankingRequestRepository;
 
@@ -40,5 +42,11 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
     @Override
     public FirmbankingRequestJpaEntity modifyFirmbankingRequest(FirmbankingRequestJpaEntity entity) {
         return firmbankingRequestRepository.save(entity);
+    }
+
+    @Override
+    public FirmbankingRequestJpaEntity findFirmbanking(FirmbankingRequestId firmbankingRequestId) {
+        return firmbankingRequestRepository.findByRequestFirmbankingId(
+                Long.valueOf(firmbankingRequestId.getFirmbankingRequestId()));
     }
 }
