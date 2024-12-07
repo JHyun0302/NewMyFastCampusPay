@@ -1,6 +1,8 @@
 package com.newfastcampuspay.money.moneyservice.adapter.in.web;
 
 import com.newfastcampuspay.common.WebAdapter;
+import com.newfastcampuspay.money.moneyservice.application.port.in.DecreaseMoneyRequestCommand;
+import com.newfastcampuspay.money.moneyservice.application.port.in.DecreaseMoneyRequestUseCase;
 import com.newfastcampuspay.money.moneyservice.application.port.in.IncreaseMoneyRequestCommand;
 import com.newfastcampuspay.money.moneyservice.application.port.in.IncreaseMoneyRequestUseCase;
 import com.newfastcampuspay.money.moneyservice.domain.MoneyChangingRequest;
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RequestMoneyChangingController {
 
     private final IncreaseMoneyRequestUseCase increaseMoneyRequestUseCase;
-//    private final DecreaseMoneyRequestUseCase decreaseMoneyRequestUseCase;
+
+    private final DecreaseMoneyRequestUseCase decreaseMoneyRequestUseCase;
 
     @PostMapping("/money/increase")
     MoneyChangingResultDetail increaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
@@ -35,17 +38,16 @@ public class RequestMoneyChangingController {
     }
     @PostMapping("/money/decrease")
     MoneyChangingResultDetail decreaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
-        //request -> command (Port.in)
-//        RegisterBankAccountCommand command = RegisterBankAccountCommand.builder()
-//                .membershipId(request.getMembershipId())
-//                .bankName(request.getBankName())
-//                .bankAccountNumber(request.getBankAccountNumber())
-//                .isValid(request.isValid())
-//                .build();
+        DecreaseMoneyRequestCommand command = DecreaseMoneyRequestCommand.builder()
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
 
-        //registeredBankAccountUseCase.registerBankAccount(command);
-        // -> MoneyChangingResultDetail
-        //return decreaseMoneyRequestUseCase.decreaseMoneyChangingRequest(command);
-        return null;
+        MoneyChangingRequest moneyChangingRequest = decreaseMoneyRequestUseCase.decreaseMoneyRequest(command);
+        MoneyChangingResultDetail resultDetail = new MoneyChangingResultDetail(
+                moneyChangingRequest.getMoneyChangingRequestId(),
+                1, 0, moneyChangingRequest.getChangingMoneyAmount());
+
+        return resultDetail;
     }
 }

@@ -11,6 +11,6 @@ public class DecreaseMoneyChangingRequest {
 
     private String targetMembershipId;
 
-    //무조건 감액 요청(충전)
+    //무조건 감액 요청
     private int amount;
 }
