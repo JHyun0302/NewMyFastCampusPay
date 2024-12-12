@@ -53,7 +53,8 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=fastcampus.logging.out.stdout
-#      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+#      docker 내부에서는 80080 포트 사용 중이라서 8080포트로 맞춤
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
 
   money-service:
     image: new-fastcampus-pay-money-service:1.0.0-SNAPSHOT
@@ -136,11 +137,11 @@ services:
     environment:
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=fastcampus.logging.out.stdout
-#
+
 #  task-consumer:
-#    image: fastcampus-pay-task-consumer:1.0.0
+#    image: new-fastcampus-pay-task-consumer:1.0.0-SNAPSHOT
 #    networks:
-#      - fastcampuspay_network
+#      - new_fastcampuspay_network
 #    restart: always
 #    depends_on:
 #      - kafka
