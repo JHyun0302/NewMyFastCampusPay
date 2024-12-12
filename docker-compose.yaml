@@ -30,6 +30,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=fastcampus.logging.out.stdout
 
   banking-service:
     image: new-fastcampus-pay-banking-service:1.0.0-SNAPSHOT
@@ -49,8 +51,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-#      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
-#      - LOGGING_TOPIC=fastcampus.logging.out.stdout
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=fastcampus.logging.out.stdout
 #      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
 
   money-service:
@@ -71,69 +73,69 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-#      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
-#      - LOGGING_TOPIC=fastcampus.logging.out.stdout
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=fastcampus.logging.out.stdout
 #      - TASK_TOPIC=fastcampus.task.topic
 #      - TASK_RESULT_TOPIC=fastcampus.task.result.topic
 #      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
-#
-#  zookeeper:
-#    image: 'arm64v8/zookeeper:3.8'
-#    networks:
-#      - fastcampuspay_network
-#    ports:
-#      - '2181:2181'
-#    environment:
-#      - ALLOW_ANONYMOUS_LOGIN=yes
-#      - ZOO_TLS_CLIENT_AUTH=none
-#      - ZOO_TLS_QUORUM_CLIENT_AUTH=none
-#
-#  kafka:
-#    image: 'bitnami/kafka:3.4.0'
-#    networks:
-#      - fastcampuspay_network
-#    ports:
-#      - '9092:9092'
-#    environment:
-#      - BITNAMI_DEBUG=yes
-#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-#      - KAFKA_BROKER_ID=1
-#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-#      - ALLOW_PLAINTEXT_LISTENER=yes
-#      - KAFKA_CFG_LISTENERS=CONTROLLER://:9093,LC://kafka:29092,LX://kafka:9092
-#      - KAFKA_CFG_ADVERTISED_LISTENERS=LC://kafka:29092,LX://${DOCKER_HOST_IP:-localhost}:9092
-#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,LC:PLAINTEXT,LX:PLAINTEXT
-#      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LC
-#    depends_on:
-#      - zookeeper
-#
-#  kafka-ui:
-#    image: provectuslabs/kafka-ui
-#    container_name: kafka-ui
-#    networks:
-#      - fastcampuspay_network
-#    ports:
-#      - "8989:8080"
-#    restart: always
-#    depends_on:
-#      - kafka
-#      - zookeeper
-#    environment:
-#      - KAFKA_CLUSTERS_0_NAME=local
-#      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
-#      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
-#
-#  logging-consumer:
-#    image: fastcampus-pay-logging-consumer:1.0.0
-#    networks:
-#      - fastcampuspay_network
-#    restart: always
-#    depends_on:
-#      - kafka
-#      - zookeeper
-#    environment:
-#      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
-#      - LOGGING_TOPIC=fastcampus.logging.out.stdout
+
+  zookeeper:
+    image: 'arm64v8/zookeeper:3.8'
+    networks:
+      - new_fastcampuspay_network
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_TLS_CLIENT_AUTH=none
+      - ZOO_TLS_QUORUM_CLIENT_AUTH=none
+
+  kafka:
+    image: 'bitnami/kafka:3.4.0'
+    networks:
+      - new_fastcampuspay_network
+    ports:
+      - '9092:9092'
+    environment:
+      - BITNAMI_DEBUG=yes
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=CONTROLLER://:9093,LC://kafka:29092,LX://kafka:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=LC://kafka:29092,LX://${DOCKER_HOST_IP:-localhost}:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,LC:PLAINTEXT,LX:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LC
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    networks:
+      - new_fastcampuspay_network
+    ports:
+      - "8989:8080"
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+
+  logging-consumer:
+    image: new-fastcampus-pay-logging-consumer:1.0.0-SNAPSHOT
+    networks:
+      - new_fastcampuspay_network
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=fastcampus.logging.out.stdout
 #
 #  task-consumer:
 #    image: fastcampus-pay-task-consumer:1.0.0
