@@ -6,6 +6,7 @@ import com.newfastcampuspay.money.application.port.in.DecreaseMoneyRequestUseCas
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestCommand;
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestUseCase;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,23 @@ public class RequestMoneyChangingController {
                 .build();
 
         MoneyChangingRequest moneyChangingRequest = increaseMoneyRequestUseCase.increaseMoneyRequest(command);
+
+        // MoneyChangingRequest -> MoneyChangingResultDetail
+        MoneyChangingResultDetail resultDetail = new MoneyChangingResultDetail(
+                moneyChangingRequest.getMoneyChangingRequestId(),
+                0, 0, moneyChangingRequest.getChangingMoneyAmount());
+
+        return resultDetail;
+    }
+
+    @PostMapping("/money/increase-async")
+    MoneyChangingResultDetail increaseMoneyChangingRequestAsync(@RequestBody IncreaseMoneyChangingRequest request) {
+        IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
+
+        MoneyChangingRequest moneyChangingRequest = increaseMoneyRequestUseCase.increaseMoneyRequestAsync(command);
 
         // MoneyChangingRequest -> MoneyChangingResultDetail
         MoneyChangingResultDetail resultDetail = new MoneyChangingResultDetail(
