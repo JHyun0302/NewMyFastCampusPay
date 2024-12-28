@@ -1,9 +1,12 @@
 package com.newfastcampuspay.money.adapter.out.persistence;
 
 import com.newfastcampuspay.common.PersistenceAdapter;
+import com.newfastcampuspay.money.application.port.in.CreatedMemberMoneyPort;
+import com.newfastcampuspay.money.application.port.in.GetMemberMoneyPort;
 import com.newfastcampuspay.money.application.port.out.DecreaseMoneyPort;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
 import com.newfastcampuspay.money.domain.MemberMoney;
+import com.newfastcampuspay.money.domain.MemberMoney.MemberMoneyId;
 import com.newfastcampuspay.money.domain.MemberMoney.MembershipId;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.ChangingMoneyAmount;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.MoneyChangingStatus;
@@ -17,7 +20,8 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort, DecreaseMoneyPort {
+public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort, DecreaseMoneyPort,
+        CreatedMemberMoneyPort, GetMemberMoneyPort {
 
     private final SpringDataMoneyChangingRequestRepository moneyChangingRequestRepository;
 
@@ -47,7 +51,7 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
             entity.setBalance(entity.getBalance() + decreaseMoneyAmount);
             return memberMoneyRepository.save(entity);
         } catch (Exception e) {
-            entity = new MemberMoneyJpaEntity(Long.parseLong(memberId.getMembershipId()), decreaseMoneyAmount);
+            entity = new MemberMoneyJpaEntity(Long.parseLong(memberId.getMembershipId()), decreaseMoneyAmount, "");
             entity = memberMoneyRepository.save(entity);
             return entity;
         }
@@ -63,9 +67,31 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
             entity.setBalance(entity.getBalance() + increaseMoneyAmount);
             return memberMoneyRepository.save(entity);
         } catch (Exception e) {
-            entity = new MemberMoneyJpaEntity(Long.parseLong(memberId.getMembershipId()), increaseMoneyAmount);
+            entity = new MemberMoneyJpaEntity(Long.parseLong(memberId.getMembershipId()), increaseMoneyAmount, "");
             entity = memberMoneyRepository.save(entity);
             return entity;
         }
+    }
+
+    @Override
+    public void createMemberMoney(MemberMoney.MemberMoneyId memberId, MemberMoney.MoneyAggregateIdentifier aggregateIdentifier) {
+        MemberMoneyJpaEntity entity = new MemberMoneyJpaEntity(
+                Long.parseLong(memberId.getMemberMoneyId()),
+                0, aggregateIdentifier.getAggregateIdentifier()
+        );
+        memberMoneyRepository.save(entity);
+    }
+
+    @Override
+    public MemberMoneyJpaEntity getMemberMoney(MemberMoneyId memberId) {
+        MemberMoneyJpaEntity entity;
+        List<MemberMoneyJpaEntity> entitiyList = memberMoneyRepository.findByMembershipId(Long.parseLong(memberId.getMemberMoneyId()));
+        if (entitiyList.size() == 0) {
+            entity = new MemberMoneyJpaEntity(
+                    Long.parseLong(memberId.getMemberMoneyId()), 0, "");
+            entity = memberMoneyRepository.save(entity);
+            return entity;
+        }
+        return entitiyList.get(0);
     }
 }

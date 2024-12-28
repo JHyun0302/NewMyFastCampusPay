@@ -4,26 +4,35 @@ import com.newfastcampuspay.common.CountDownLatchManager;
 import com.newfastcampuspay.common.RechargingMoneyTask;
 import com.newfastcampuspay.common.SubTask;
 import com.newfastcampuspay.common.UseCase;
+import com.newfastcampuspay.money.adapter.axon.command.IncreaseMemberMoneyCommand;
+import com.newfastcampuspay.money.adapter.axon.command.MemberMoneyCreatedCommand;
 import com.newfastcampuspay.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.newfastcampuspay.money.adapter.out.persistence.MoneyChangingRequestMapper;
+import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyCommand;
+import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyUseCase;
+import com.newfastcampuspay.money.application.port.in.CreatedMemberMoneyPort;
+import com.newfastcampuspay.money.application.port.in.GetMemberMoneyPort;
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestCommand;
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestUseCase;
 import com.newfastcampuspay.money.application.port.out.GetMembershipPort;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
 import com.newfastcampuspay.money.application.port.out.SendRechargingMoneyTaskPort;
 import com.newfastcampuspay.money.domain.MemberMoney;
+import com.newfastcampuspay.money.domain.MemberMoney.MemberMoneyId;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.config.Task;
+import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase {
+public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase, CreateMemberMoneyUseCase {
 
     private final CountDownLatchManager countDownLatchManager;
 
@@ -34,6 +43,12 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
     private final IncreaseMoneyPort increaseMoneyPort;
 
     private final MoneyChangingRequestMapper mapper;
+
+    private final CommandGateway commandGateway;
+
+    private final CreatedMemberMoneyPort createdMemberMoneyPort;
+
+    private final GetMemberMoneyPort getMemberMoneyPort;
 
     @Override
     public MoneyChangingRequest increaseMoneyRequest(IncreaseMoneyRequestCommand command) {
@@ -155,5 +170,55 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
         // 5. Consume ok, Logic
 
         return null;
+    }
+
+    @Override
+    public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
+        MemberMoneyJpaEntity memberMoneyJpaEntity = getMemberMoneyPort.getMemberMoney(
+                new MemberMoney.MemberMoneyId(command.getTargetMembershipId())
+        );
+
+        String aggregateIdentifier = memberMoneyJpaEntity.getAggregateIdentifier();
+
+        //command
+        commandGateway.send(IncreaseMemberMoneyCommand.builder()
+                        .aggregateIdentifier(aggregateIdentifier)
+                        .membershipId(command.getTargetMembershipId())
+                        .amount(command.getAmount()).build())
+                .whenComplete((result, throwable) -> {
+                    if (throwable != null) {
+                        log.error("throwable : {}", throwable);
+                        throw new RuntimeException(throwable);
+                    } else {
+                        // Increase money -> money increase
+                        log.info("increaseMoney result : {}", result);
+                        increaseMoneyPort.increaseMoney(
+                                new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
+                    }
+                });
+    }
+
+    @Override
+    public void createMemberMoney(CreateMemberMoneyCommand command) {
+        /**
+         * Axon Framework에서 Axon Server로 보내기
+         * 신뢰성, 가용성 매우 높은 구간
+         */
+        MemberMoneyCreatedCommand axonCommand = new MemberMoneyCreatedCommand(command.getMembershipId());
+        /**
+         * Event Sourcing의 결과 대기 및 확인
+         */
+        commandGateway.send(axonCommand).whenComplete((result, throwable) -> {
+            if (throwable != null) {
+                log.error("throwable : {}", throwable);
+                throw new RuntimeException(throwable);
+            } else {
+                log.info("result : {}", result);
+                createdMemberMoneyPort.createMemberMoney(
+                        new MemberMoney.MemberMoneyId(command.getMembershipId()),
+                        new MemberMoney.MoneyAggregateIdentifier(result.toString())
+                );
+            }
+        });
     }
 }

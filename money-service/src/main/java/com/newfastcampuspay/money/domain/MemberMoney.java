@@ -57,5 +57,16 @@ public class MemberMoney {
         int balance;
     }
 
+    /**
+     * RDB에서 event 식별을 위한 컬럼
+     */
+    @Value
+    public static class MoneyAggregateIdentifier {
+        public MoneyAggregateIdentifier(String aggregateIdentifier) {
+            this.aggregateIdentifier = aggregateIdentifier;
+        }
+        String aggregateIdentifier;
+    }
+
 
 }
