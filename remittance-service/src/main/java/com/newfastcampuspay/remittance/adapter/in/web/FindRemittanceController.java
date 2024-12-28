@@ -17,7 +17,7 @@ class FindRemittanceController {
 
     private final FindRemittanceUseCase findRemittanceUseCase;
 
-    @GetMapping(path = "/remittance/${membershipId}")
+    @GetMapping(path = "/remittance/{membershipId}")
     List<RemittanceRequest> findRemittanceHistory(@PathVariable String membershipId) {
         FindRemittanceCommand command = FindRemittanceCommand.builder()
                 .fromMembershipId(membershipId)
