@@ -1,6 +1,7 @@
 package com.newfastcampuspay.banking.adapter.out.persistence;
 
 import com.newfastcampuspay.banking.domain.FirmbankingRequest;
+import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingAggregateIdentifier;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,8 @@ public class FirmbankingRequestMapper {
                 new FirmbankingRequest.ToBankAccountNumber(requestFirmbankingJpaEntity.getToBankAccountNumber()),
                 new FirmbankingRequest.MoneyAmount(requestFirmbankingJpaEntity.getMoneyAmount()),
                 new FirmbankingRequest.FirmbankingStatus(requestFirmbankingJpaEntity.getFirmbankingStatus()),
-                uuid
+                uuid,
+                new FirmbankingAggregateIdentifier(requestFirmbankingJpaEntity.getAggregateIdentifier())
         );
     }
 }

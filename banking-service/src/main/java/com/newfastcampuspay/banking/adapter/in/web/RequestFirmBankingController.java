@@ -31,4 +31,19 @@ public class RequestFirmBankingController {
 
         return requestFirmbankingUseCase.requestFirmbanking(command);
     }
+
+    @PostMapping("/banking/firmbanking/request-eda")
+    void registerFirmbankingByEvent(@RequestBody RequestFirmbankingRequest request) {
+        //request -> command (Port.in)
+        RequestFirmbankingCommand command = RequestFirmbankingCommand.builder()
+                .fromBankName(request.getFromBankName())
+                .fromBankAccountNumber(request.getFromBankAccountNumber())
+                .toBankName(request.getToBankName())
+                .toBankAccountNumber(request.getToBankAccountNumber())
+                .moneyAmount(request.getMoneyAmount())
+                .build();
+
+        requestFirmbankingUseCase.requestFirmbankingByEvent(command);
+    }
+
 }

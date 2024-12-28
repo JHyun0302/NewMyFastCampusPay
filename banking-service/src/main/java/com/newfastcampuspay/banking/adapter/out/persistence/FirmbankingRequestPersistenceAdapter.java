@@ -27,7 +27,7 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
 
 
     @Override
-    public FirmbankingRequestJpaEntity createFirmbankingRequest(FirmbankingRequest.FromBankName fromBankName, FirmbankingRequest.FromBankAccountNumber fromBankAccountNumber, FirmbankingRequest.ToBankName toBankName, FirmbankingRequest.ToBankAccountNumber toBankAccountNumber, FirmbankingRequest.MoneyAmount moneyAmount, FirmbankingRequest.FirmbankingStatus firmbankingStatus) {
+    public FirmbankingRequestJpaEntity createFirmbankingRequest(FirmbankingRequest.FromBankName fromBankName, FirmbankingRequest.FromBankAccountNumber fromBankAccountNumber, FirmbankingRequest.ToBankName toBankName, FirmbankingRequest.ToBankAccountNumber toBankAccountNumber, FirmbankingRequest.MoneyAmount moneyAmount, FirmbankingRequest.FirmbankingStatus firmbankingStatus, FirmbankingRequest.FirmbankingAggregateIdentifier aggregateIdentifier) {
         return firmbankingRequestRepository.save(new FirmbankingRequestJpaEntity(
                 fromBankName.getFromBankName(),
                 fromBankAccountNumber.getFromBankAccountNumber(),
@@ -35,7 +35,8 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
                 toBankAccountNumber.getToBankAccountNumber(),
                 moneyAmount.getMoneyAmount(),
                 firmbankingStatus.getFirmbankingStatus(),
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                aggregateIdentifier.getAggregateIdentifier()
         ));
     }
 
