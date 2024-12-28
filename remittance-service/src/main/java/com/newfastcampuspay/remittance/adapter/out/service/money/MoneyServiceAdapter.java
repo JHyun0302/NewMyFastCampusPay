@@ -2,8 +2,6 @@ package com.newfastcampuspay.remittance.adapter.out.service.money;
 
 import com.newfastcampuspay.common.CommonHttpClient;
 import com.newfastcampuspay.common.ExternalSystemAdapter;
-import com.newfastcampuspay.remittance.application.port.out.banking.BankingInfo;
-import com.newfastcampuspay.remittance.application.port.out.banking.BankingPort;
 import com.newfastcampuspay.remittance.application.port.out.money.MoneyInfo;
 import com.newfastcampuspay.remittance.application.port.out.money.MoneyPort;
 import lombok.RequiredArgsConstructor;

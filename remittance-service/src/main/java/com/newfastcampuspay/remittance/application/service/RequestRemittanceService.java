@@ -1,6 +1,7 @@
 package com.newfastcampuspay.remittance.application.service;
 
 
+import com.newfastcampuspay.common.UseCase;
 import com.newfastcampuspay.remittance.adapter.out.persistence.RemittanceRequestJpaEntity;
 import com.newfastcampuspay.remittance.adapter.out.persistence.RemittanceRequestMapper;
 import com.newfastcampuspay.remittance.application.port.in.RequestRemittanceCommand;
@@ -15,6 +16,7 @@ import com.newfastcampuspay.remittance.domain.RemittanceRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+@UseCase
 @RequiredArgsConstructor
 @Transactional
 public class RequestRemittanceService implements RequestRemittanceUseCase {

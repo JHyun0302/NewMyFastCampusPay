@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MembershipServiceAdapter implements GetMembershipPort {
+
     private final CommonHttpClient commonHttpClient;
+
     private final String membershipServiceUrl;
 
     public MembershipServiceAdapter(CommonHttpClient commonHttpClient,
