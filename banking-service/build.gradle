@@ -20,7 +20,7 @@ java {
 }
 
 ext{
-	axonVersion = "4.6.0"
+	axonVersion = "4.9.1"
 }
 
 repositories {
@@ -57,6 +57,11 @@ dependencies {
 //	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testRuntimeOnly 'com.h2database:h2'
+
+	//axon-server
+	implementation group: 'org.axonframework', name: 'axon-spring-boot-starter', version: "$axonVersion"
+	implementation group: 'org.axonframework', name: 'axon-configuration', version: "$axonVersion"
+
 
 	//Common 모듈
 	implementation project(path: ':common')
