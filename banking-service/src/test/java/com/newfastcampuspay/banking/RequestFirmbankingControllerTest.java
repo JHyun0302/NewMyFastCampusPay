@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class RequestFirmBankingControllerTest {
+class RequestFirmbankingControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -5,6 +5,6 @@ import com.newfastcampuspay.money.domain.MemberMoney;
 
 public interface GetMemberMoneyPort {
     MemberMoneyJpaEntity getMemberMoney(
-            MemberMoney.MemberMoneyId memberMoneyId
+            MemberMoney.MembershipId membershipId
     );
 }

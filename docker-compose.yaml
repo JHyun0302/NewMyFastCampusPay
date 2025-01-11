@@ -71,6 +71,7 @@ services:
       - LOGGING_TOPIC=fastcampus.logging.out.stdout
 #      docker 내부에서는 80080 포트 사용 중이라서 8080포트로 맞춤
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
 
   money-service:
     image: new-fastcampus-pay-money-service:1.0.0-SNAPSHOT
@@ -95,6 +96,7 @@ services:
       - TASK_TOPIC=fastcampus.task.topic
       - TASK_RESULT_TOPIC=fastcampus.task.result.topic
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
 
   zookeeper:
     image: 'arm64v8/zookeeper:3.8'

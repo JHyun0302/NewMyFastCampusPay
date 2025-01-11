@@ -1,35 +1,43 @@
 package com.newfastcampuspay.banking.adapter.out.persistence;
 
-import com.newfastcampuspay.banking.application.port.out.FindBankAccountPort;
+import com.newfastcampuspay.banking.application.port.in.GetRegisteredBankAccountCommand;
+import com.newfastcampuspay.banking.application.port.out.GetRegisteredBankAccountPort;
 import com.newfastcampuspay.banking.application.port.out.RegisterBankAccountPort;
+import com.newfastcampuspay.banking.domain.RegisteredBankAccount;
+import com.newfastcampuspay.banking.domain.RegisteredBankAccount.AggreagteIdentifier;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.BankAccountNumber;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.BankName;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.LinkedStatusIsValid;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.MembershipId;
-import com.newfastcampuspay.banking.domain.RegisteredBankAccount.RegisteredBankAccountId;
 import com.newfastcampuspay.common.PersistenceAdapter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class RegisterBankAccountPersistenceAdapter implements RegisterBankAccountPort, FindBankAccountPort {
+public class RegisterBankAccountPersistenceAdapter implements RegisterBankAccountPort, GetRegisteredBankAccountPort {
 
     private final SpringDataRegisteredBankAccountRepository bankAccountRepository;
 
     @Override
-    public RegisteredBankAccountJpaEntity createRegisteredBankAccount(MembershipId membershipId, BankName bankName, BankAccountNumber bankAccountNumber, LinkedStatusIsValid linkedStatusIsValid) {
+    public RegisteredBankAccountJpaEntity createRegisteredBankAccount(MembershipId membershipId, BankName bankName, BankAccountNumber bankAccountNumber, LinkedStatusIsValid linkedStatusIsValid, AggreagteIdentifier aggreagteIdentifier) {
         return bankAccountRepository.save(
                 new RegisteredBankAccountJpaEntity(
                         membershipId.getMembershipId(),
                         bankName.getBankName(),
                         bankAccountNumber.getBankAccountNumber(),
-                        linkedStatusIsValid.isLinkedStatusIsValid()
+                        linkedStatusIsValid.isLinkedStatusIsValid(),
+                        aggreagteIdentifier.getAggregateIdentifier()
                 )
         );
     }
 
     @Override
-    public RegisteredBankAccountJpaEntity findBankAccount(RegisteredBankAccountId registeredBankAccountId) {
-        return bankAccountRepository.findByRegisteredBankAccountId(Long.valueOf(registeredBankAccountId.getRegisteredBankAccountId()));
+    public RegisteredBankAccountJpaEntity getRegisteredBankAccount(GetRegisteredBankAccountCommand command) {
+        List<RegisteredBankAccountJpaEntity> entityList = bankAccountRepository.findByMembershipId(command.getMembershipId());
+        if (entityList.size() > 0) {
+            return entityList.get(0);
+        }
+        return null;
     }
 }

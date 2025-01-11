@@ -1,12 +1,15 @@
 package com.newfastcampuspay.banking.application.service;
 
 import com.newfastcampuspay.banking.adapter.axon.command.CreateFirmbankingRequestCommand;
+import com.newfastcampuspay.banking.adapter.axon.command.UpdateFirmbankingRequestCommand;
 import com.newfastcampuspay.banking.adapter.out.external.bank.ExternalFirmbankingRequest;
 import com.newfastcampuspay.banking.adapter.out.external.bank.FirmbankingResult;
 import com.newfastcampuspay.banking.adapter.out.persistence.FirmbankingRequestJpaEntity;
 import com.newfastcampuspay.banking.adapter.out.persistence.FirmbankingRequestMapper;
 import com.newfastcampuspay.banking.application.port.in.RequestFirmbankingCommand;
 import com.newfastcampuspay.banking.application.port.in.RequestFirmbankingUseCase;
+import com.newfastcampuspay.banking.application.port.in.UpdateFirmbankingCommand;
+import com.newfastcampuspay.banking.application.port.in.UpdateFirmbankingUseCase;
 import com.newfastcampuspay.banking.application.port.out.RequestExternalFirmbanking;
 import com.newfastcampuspay.banking.application.port.out.RequestFirmbankingPort;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest;
@@ -22,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class RequestFirmbankingService implements RequestFirmbankingUseCase {
+public class RequestFirmbankingService implements RequestFirmbankingUseCase, UpdateFirmbankingUseCase {
 
     private final FirmbankingRequestMapper mapper;
 
@@ -53,7 +56,8 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
                 command.getFromBankName(),
                 command.getFromBankAccountNumber(),
                 command.getToBankName(),
-                command.getToBankAccountNumber()
+                command.getToBankAccountNumber(),
+                command.getMoneyAmount()
         ));
 
         //Transactional UUID
@@ -108,7 +112,8 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
                                         command.getFromBankName(),
                                         command.getFromBankAccountNumber(),
                                         command.getToBankName(),
-                                        command.getToBankAccountNumber()
+                                        command.getToBankAccountNumber(),
+                                        command.getMoneyAmount()
                                 ));
 
                         //결과에 따라서 DB save
@@ -124,5 +129,36 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
                     }
                 }
         );
+    }
+
+    @Override
+    public void updateFirmbankingByEvent(UpdateFirmbankingCommand command) {
+
+
+        UpdateFirmbankingRequestCommand updateFirmbankingRequestCommand = new UpdateFirmbankingRequestCommand(
+                command.getFirmbankingAggregateIdentifier(), command.getFirmbankingStatus());
+
+        // Command
+        commandGateway.send(updateFirmbankingRequestCommand).whenComplete(
+                (result, throwable) -> {
+                    if (throwable!= null) {
+                        log.error("throwable : {}", throwable);
+                        throw new RuntimeException(throwable);
+                    } else {
+                        log.info("updateFirmbankingRequestCommand completed, Aggregate Id : {}", result.toString());
+                        //FirmbankingRequest update
+                        FirmbankingRequestJpaEntity entity = requestFirmbankingPort.getFirmbankingRequest(
+                                new FirmbankingAggregateIdentifier(command.getFirmbankingAggregateIdentifier()));
+
+                        //status의 변경으로 인한 외부 은행과의 커뮤니케이션
+                        // if rollback -> 0, status 변경도 해주겠지만
+                        // + 기존 펌뱅킹 정보에서 from <-> to 가 변경된 펌뱅킹을 요청하는 새로운 요청
+
+                        entity.setFirmbankingStatus(command.getFirmbankingStatus());
+                        requestFirmbankingPort.modifyFirmbankingRequest(entity);
+                    }
+                }
+        );
+
     }
 }

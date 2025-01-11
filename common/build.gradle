@@ -18,6 +18,10 @@ java {
 	}
 }
 
+ext{
+	axonVersion = "4.9.1"
+}
+
 repositories {
 	mavenCentral()
 }
@@ -30,6 +34,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.kafka:spring-kafka'
+
+	//axon-server
+	implementation group: 'org.axonframework', name: 'axon-spring-boot-starter', version: "$axonVersion"
+	implementation group: 'org.axonframework', name: 'axon-configuration', version: "$axonVersion"
+
 }
 
 tasks.named('test') {

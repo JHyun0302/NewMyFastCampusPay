@@ -4,6 +4,7 @@ import com.newfastcampuspay.banking.application.port.out.FindFirmbankingPort;
 import com.newfastcampuspay.banking.application.port.out.RegisterBankAccountPort;
 import com.newfastcampuspay.banking.application.port.out.RequestFirmbankingPort;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest;
+import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingAggregateIdentifier;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingRequestId;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FirmbankingStatus;
 import com.newfastcampuspay.banking.domain.FirmbankingRequest.FromBankAccountNumber;
@@ -16,6 +17,7 @@ import com.newfastcampuspay.banking.domain.RegisteredBankAccount.BankName;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.LinkedStatusIsValid;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.MembershipId;
 import com.newfastcampuspay.common.PersistenceAdapter;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -49,5 +51,17 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
     public FirmbankingRequestJpaEntity findFirmbanking(FirmbankingRequestId firmbankingRequestId) {
         return firmbankingRequestRepository.findByRequestFirmbankingId(
                 Long.valueOf(firmbankingRequestId.getFirmbankingRequestId()));
+    }
+
+    @Override
+    public FirmbankingRequestJpaEntity getFirmbankingRequest(FirmbankingAggregateIdentifier firmbankingAggregateIdentifier) {
+        List<FirmbankingRequestJpaEntity> entityList = firmbankingRequestRepository.findByAggregateIdentifier(
+                firmbankingAggregateIdentifier.getAggregateIdentifier());
+
+        if (entityList.size() >= 1) {
+            return entityList.get(0);
+        }
+
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import com.newfastcampuspay.banking.domain.RegisteredBankAccount;
 import com.newfastcampuspay.common.WebAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +34,17 @@ public class RegisterBankAccountController {
         }
 
         return registeredBankAccount;
+    }
+
+    @PutMapping("/banking/account/register-eda")
+    void registeredBankAccountByEvent(@RequestBody RegisterBankAccountRequest request) {
+        RegisterBankAccountCommand command = RegisterBankAccountCommand.builder()
+                .membershipId(request.getMembershipId())
+                .bankName(request.getBankName())
+                .bankAccountNumber(request.getBankAccountNumber())
+                .isValid(request.isValid())
+                .build();
+
+        registeredBankAccountUseCase.registerBankAccountByEvent(command);
     }
 }

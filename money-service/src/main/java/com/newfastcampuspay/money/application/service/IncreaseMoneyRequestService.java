@@ -6,6 +6,8 @@ import com.newfastcampuspay.common.SubTask;
 import com.newfastcampuspay.common.UseCase;
 import com.newfastcampuspay.money.adapter.axon.command.IncreaseMemberMoneyCommand;
 import com.newfastcampuspay.money.adapter.axon.command.MemberMoneyCreatedCommand;
+import com.newfastcampuspay.money.adapter.axon.command.RechargingMoneyRequestCreateCommand;
+import com.newfastcampuspay.money.adapter.axon.event.RechargingRequestCreatedEvent;
 import com.newfastcampuspay.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.newfastcampuspay.money.adapter.out.persistence.MoneyChangingRequestMapper;
 import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyCommand;
@@ -162,7 +164,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
                         )
                 );
             }
-        } else{
+        } else {
             // 4-2. Consume fail, Logic
             return null;
         }
@@ -174,18 +176,20 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     @Override
     public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
+
         MemberMoneyJpaEntity memberMoneyJpaEntity = getMemberMoneyPort.getMemberMoney(
-                new MemberMoney.MemberMoneyId(command.getTargetMembershipId())
+                new MemberMoney.MembershipId(command.getTargetMembershipId())
         );
 
-        String aggregateIdentifier = memberMoneyJpaEntity.getAggregateIdentifier();
+        String memberMoneyAggregateIdentifier = memberMoneyJpaEntity.getAggregateIdentifier();
 
-        //command
-        commandGateway.send(IncreaseMemberMoneyCommand.builder()
-                        .aggregateIdentifier(aggregateIdentifier)
-                        .membershipId(command.getTargetMembershipId())
-                        .amount(command.getAmount()).build())
-                .whenComplete((result, throwable) -> {
+        //Saga 의 시작을 나타내는 커맨드!
+        //RechargingMoneyRequestCreateCommand
+        commandGateway.send(new RechargingMoneyRequestCreateCommand(memberMoneyAggregateIdentifier,
+                UUID.randomUUID().toString(),
+                command.getTargetMembershipId(),
+                command.getAmount())).whenComplete(
+                (result, throwable) -> {
                     if (throwable != null) {
                         log.error("throwable : {}", throwable);
                         throw new RuntimeException(throwable);
@@ -195,7 +199,34 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
                         increaseMoneyPort.increaseMoney(
                                 new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
                     }
-                });
+                }
+        );
+
+        /**
+         * saga 등록되기 전
+         */
+//        MemberMoneyJpaEntity memberMoneyJpaEntity = getMemberMoneyPort.getMemberMoney(
+//                new MemberMoney.MembershipId(command.getTargetMembershipId())
+//        );
+//
+//        String aggregateIdentifier = memberMoneyJpaEntity.getAggregateIdentifier();
+//
+//        //command
+//        commandGateway.send(IncreaseMemberMoneyCommand.builder()
+//                        .aggregateIdentifier(aggregateIdentifier)
+//                        .membershipId(command.getTargetMembershipId())
+//                        .amount(command.getAmount()).build())
+//                .whenComplete((result, throwable) -> {
+//                    if (throwable != null) {
+//                        log.error("throwable : {}", throwable);
+//                        throw new RuntimeException(throwable);
+//                    } else {
+//                        // Increase money -> money increase
+//                        log.info("increaseMoney result : {}", result);
+//                        increaseMoneyPort.increaseMoney(
+//                                new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
+//                    }
+//                });
     }
 
     @Override

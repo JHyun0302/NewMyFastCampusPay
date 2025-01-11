@@ -6,7 +6,6 @@ import com.newfastcampuspay.money.application.port.in.GetMemberMoneyPort;
 import com.newfastcampuspay.money.application.port.out.DecreaseMoneyPort;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
 import com.newfastcampuspay.money.domain.MemberMoney;
-import com.newfastcampuspay.money.domain.MemberMoney.MemberMoneyId;
 import com.newfastcampuspay.money.domain.MemberMoney.MembershipId;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.ChangingMoneyAmount;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.MoneyChangingStatus;
@@ -83,12 +82,12 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
     }
 
     @Override
-    public MemberMoneyJpaEntity getMemberMoney(MemberMoneyId memberId) {
+    public MemberMoneyJpaEntity getMemberMoney(MembershipId memberId) {
         MemberMoneyJpaEntity entity;
-        List<MemberMoneyJpaEntity> entitiyList = memberMoneyRepository.findByMembershipId(Long.parseLong(memberId.getMemberMoneyId()));
+        List<MemberMoneyJpaEntity> entitiyList = memberMoneyRepository.findByMembershipId(Long.parseLong(memberId.getMembershipId()));
         if (entitiyList.size() == 0) {
             entity = new MemberMoneyJpaEntity(
-                    Long.parseLong(memberId.getMemberMoneyId()), 0, "");
+                    Long.parseLong(memberId.getMembershipId()), 0, "");
             entity = memberMoneyRepository.save(entity);
             return entity;
         }
