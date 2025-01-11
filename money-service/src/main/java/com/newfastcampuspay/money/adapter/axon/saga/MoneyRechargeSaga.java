@@ -37,6 +37,7 @@ public class MoneyRechargeSaga {
     }
 
     /**
+     * 등록된 은행 계좌인지 체크를 위해 외부 은행과 통신
      * associateProperty : 여러 saga가 존재할 때, 메모리에서 saga를 구분하기 위한 구분자
      */
     @StartSaga
@@ -73,12 +74,15 @@ public class MoneyRechargeSaga {
                         log.error("CheckRegisteredBankAccountCommand Command failed : {}", throwable);
                         throw new RuntimeException(throwable);
                     } else {
-                        log.info("\"CheckRegisteredBankAccountCommand Command success");
+                        log.info("CheckRegisteredBankAccountCommand Command success");
                     }
                 }
         );
     }
 
+    /**
+     * 외부 은행 응답에 따라 송금 요청 개시
+     */
     @SagaEventHandler(associationProperty = "checkRegisteredBankAccountId")
     public void handle(CheckedRegisteredBankAccountEvent event) {
         log.info("CheckRegisteredBankAccountEvent saga : {}", event.toString());
@@ -116,6 +120,11 @@ public class MoneyRechargeSaga {
         );
     }
 
+    /**
+     * 펌뱅킹 요청 수행
+     * - 성공 시, 머니 증액 (DB Update)
+     * - 실패 시, Rollback Saga
+     */
     @SagaEventHandler(associationProperty = "requestFirmbankingId")
     public void handle(RequestFirmbankingFinishedEvent event, IncreaseMoneyPort increaseMoneyPort) {
         log.info("RequestFirmbankingFinishedEvent saga : {}", event.toString());

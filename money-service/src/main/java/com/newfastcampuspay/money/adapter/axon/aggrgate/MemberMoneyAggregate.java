@@ -37,6 +37,7 @@ public class MemberMoneyAggregate {
     /**
      * @PostMapping("/money/create-member-money")
      * Consumer -> Event Store 1. Create Event Save
+     * 고객 계좌 만들라는 이벤트 생성
      */
     @CommandHandler
     public MemberMoneyAggregate(MemberMoneyCreatedCommand command) {
@@ -47,6 +48,7 @@ public class MemberMoneyAggregate {
 
     /**
      * apply 이후 Event Souring 진행
+     * 고객 계좌 만들기
      */
     @EventSourcingHandler
     public void on(MemberMoneyCreatedEvent event) {
@@ -58,6 +60,7 @@ public class MemberMoneyAggregate {
 
     /**
      * @PostMapping("/money/increase-eda")
+     * 고객 머니 증액 이벤트 생성
      */
     @CommandHandler
     public String handle(@NotNull IncreaseMemberMoneyCommand command) {
@@ -69,7 +72,9 @@ public class MemberMoneyAggregate {
         return id;
     }
 
-
+    /**
+     * 고객 머니 증액
+     */
     @EventSourcingHandler
     public void on(IncreaseMemberMoneyEvent event) {
         log.info("IncreaseMemberMoneyEvent Sourcing Handler");
