@@ -58,11 +58,11 @@ public class RequestMoneyChangingController {
         return resultDetail;
     }
 
-    @PostMapping("/money/decrease")
+    @PostMapping("/money/decrease-eda")
     MoneyChangingResultDetail decreaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
         DecreaseMoneyRequestCommand command = DecreaseMoneyRequestCommand.builder()
                 .targetMembershipId(request.getTargetMembershipId())
-                .amount(request.getAmount())
+                .amount(request.getAmount() * -1) // -1 곱하면 감액 api
                 .build();
 
         MoneyChangingRequest moneyChangingRequest = decreaseMoneyRequestUseCase.decreaseMoneyRequest(command);
