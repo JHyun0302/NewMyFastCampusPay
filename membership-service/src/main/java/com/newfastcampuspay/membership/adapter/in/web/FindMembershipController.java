@@ -1,9 +1,11 @@
 package com.newfastcampuspay.membership.adapter.in.web;
 
 import com.newfastcampuspay.common.WebAdapter;
+import com.newfastcampuspay.membership.application.port.in.FindMembershipByAddressCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipUseCase;
 import com.newfastcampuspay.membership.domain.Membership;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,4 +28,15 @@ public class FindMembershipController {
 
         return ResponseEntity.ok(findMembershipUseCase.findMembership(command));
     }
+
+    @GetMapping("/membership/address/{addressName}")
+    ResponseEntity<List<Membership>> findMembershipListByAddress(@PathVariable String addressName) {
+        FindMembershipByAddressCommand command = FindMembershipByAddressCommand.builder()
+                .addressName(addressName)
+                .build();
+
+        return ResponseEntity.ok(findMembershipUseCase.findMembershipListByAddress(command));
+    }
+
+
 }

@@ -4,6 +4,7 @@ import com.newfastcampuspay.common.PersistenceAdapter;
 import com.newfastcampuspay.money.application.port.in.CreatedMemberMoneyPort;
 import com.newfastcampuspay.money.application.port.in.GetMemberMoneyPort;
 import com.newfastcampuspay.money.application.port.out.DecreaseMoneyPort;
+import com.newfastcampuspay.money.application.port.out.GetMemberMoneyListPort;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
 import com.newfastcampuspay.money.domain.MemberMoney;
 import com.newfastcampuspay.money.domain.MemberMoney.MembershipId;
@@ -13,6 +14,7 @@ import com.newfastcampuspay.money.domain.MoneyChangingRequest.MoneyChangingType;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.TargetMembershipId;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest.Uuid;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort, DecreaseMoneyPort,
-        CreatedMemberMoneyPort, GetMemberMoneyPort {
+        CreatedMemberMoneyPort, GetMemberMoneyPort, GetMemberMoneyListPort {
 
     private final SpringDataMoneyChangingRequestRepository moneyChangingRequestRepository;
 
@@ -92,5 +94,20 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
             return entity;
         }
         return entitiyList.get(0);
+    }
+
+    @Override
+    public List<MemberMoneyJpaEntity> getMemberMoneyPort(List<String> membershipIds) {
+        // membershipIds 를 기준으로, 여러 개의 MemberMoneyJpaEntity를 가져온다.
+        return memberMoneyRepository.findMemberMoneyListByMembershipIds(convertMembershipIds(membershipIds));
+    }
+
+    private List<Long> convertMembershipIds(List<String> membershipIds) {
+        List<Long> longList = new ArrayList<>();
+        // membershipIds 를 Long 타입의 List로 변환한다.
+        for (String membershipId : membershipIds) {
+            longList.add(Long.valueOf(membershipId));
+        }
+        return longList;
     }
 }

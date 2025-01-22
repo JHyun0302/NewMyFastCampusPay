@@ -11,6 +11,7 @@ import com.newfastcampuspay.membership.domain.Membership.MembershipId;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsCorp;
 import com.newfastcampuspay.membership.domain.Membership.MembershipIsValid;
 import com.newfastcampuspay.membership.domain.Membership.MembershipName;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
@@ -37,6 +38,13 @@ public class MembershipPersistenceAdapter implements RegisterMembershipPort, Fin
     @Override
     public MembershipJpaEntity findMembership(MembershipId membershipId) {
         return membershipRepository.getById(Long.valueOf(membershipId.getMembershipId()));
+    }
+
+    @Override
+    public List<MembershipJpaEntity> findMembershipListByAddress(MembershipAddress membershipAddress) {
+        // 관악구, 서초구, 강남구 중 하나
+        String address = membershipAddress.getAddressValue();
+        return membershipRepository.findByAddress(address);
     }
 
     @Override

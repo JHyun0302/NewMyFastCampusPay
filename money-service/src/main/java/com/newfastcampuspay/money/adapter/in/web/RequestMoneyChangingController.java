@@ -5,10 +5,16 @@ import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyCommand;
 import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyUseCase;
 import com.newfastcampuspay.money.application.port.in.DecreaseMoneyRequestCommand;
 import com.newfastcampuspay.money.application.port.in.DecreaseMoneyRequestUseCase;
+import com.newfastcampuspay.money.application.port.in.FindMemberMoneyListByMembershipIdsCommand;
+import com.newfastcampuspay.money.application.port.in.FindMemberMoneyListByMembershipIdsRequestUseCase;
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestCommand;
 import com.newfastcampuspay.money.application.port.in.IncreaseMoneyRequestUseCase;
+import com.newfastcampuspay.money.domain.MemberMoney;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +29,8 @@ public class RequestMoneyChangingController {
     private final DecreaseMoneyRequestUseCase decreaseMoneyRequestUseCase;
 
     private final CreateMemberMoneyUseCase createMemberMoneyUseCase;
+
+    private final FindMemberMoneyListByMembershipIdsRequestUseCase findMemberMoneyListByMembershipIdsRequestUseCase;
 
     @PostMapping("/money/increase")
     MoneyChangingResultDetail increaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
@@ -95,5 +103,13 @@ public class RequestMoneyChangingController {
         increaseMoneyRequestUseCase.increaseMoneyRequestByEvent(command);
     }
 
+    @PostMapping("/money/member-money")
+    List<MemberMoney> findMemberMoneyListByMembershipIds(@RequestBody FindMemberMoneyListByMembershipIdsRequest request) {
+        FindMemberMoneyListByMembershipIdsCommand command = FindMemberMoneyListByMembershipIdsCommand.builder()
+                .membershipIds(request.getMembershipIds())
+                .build();
+
+        return findMemberMoneyListByMembershipIdsRequestUseCase.findMemberMoneyListByMembershipIds(command);
+    }
 
 }
