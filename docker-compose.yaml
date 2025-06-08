@@ -34,6 +34,8 @@ services:
 
   membership-service:
     image: new-fastcampus-pay-membership-service:1.0.0-SNAPSHOT
+    build:
+      context: ./membership-service
     networks:
       - new_fastcampuspay_network
     ports:
@@ -51,6 +53,8 @@ services:
 
   banking-service:
     image: new-fastcampus-pay-banking-service:1.0.0-SNAPSHOT
+    build:
+      context: ./banking-service
     networks:
       - new_fastcampuspay_network
     ports:
@@ -75,6 +79,8 @@ services:
 
   money-service:
     image: new-fastcampus-pay-money-service:1.0.0-SNAPSHOT
+    build:
+      context: ./money-service
     networks:
       - new_fastcampuspay_network
     ports:
@@ -146,6 +152,8 @@ services:
 
   logging-consumer:
     image: new-fastcampus-pay-logging-consumer:1.0.0-SNAPSHOT
+    build:
+      context: ./logging-consumer
     networks:
       - new_fastcampuspay_network
     restart: always
@@ -158,6 +166,8 @@ services:
 
   task-consumer:
     image: new-fastcampus-pay-task-consumer:1.0.0-SNAPSHOT
+    build:
+      context: ./task-consumer
     networks:
       - new_fastcampuspay_network
     restart: always
@@ -170,8 +180,10 @@ services:
       - TASK_TOPIC=fastcampus.task.topic
       - TASK_RESULT_TOPIC=fastcampus.task.result.topic
 
-  remittance-serivce:
+  remittance-service:
     image: new-fastcampus-pay-remittance-service:1.0.0-SNAPSHOT
+    build:
+      context: ./remittance-service
     networks:
       - new_fastcampuspay_network
     ports:
@@ -198,8 +210,10 @@ services:
       - SERVICE_BANKING_URL=http://banking-service:8080
       - SERVICE_MONEY_URL=http://money-service:8080
 
-  payment-serivce:
+  payment-service:
     image: new-fastcampus-pay-payment-service:1.0.0-SNAPSHOT
+    build:
+      context: ./payment-service
     networks:
       - new_fastcampuspay_network
     ports:
