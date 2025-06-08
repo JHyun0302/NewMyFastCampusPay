@@ -133,8 +133,6 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase, Upd
 
     @Override
     public void updateFirmbankingByEvent(UpdateFirmbankingCommand command) {
-
-
         UpdateFirmbankingRequestCommand updateFirmbankingRequestCommand = new UpdateFirmbankingRequestCommand(
                 command.getFirmbankingAggregateIdentifier(), command.getFirmbankingStatus());
 

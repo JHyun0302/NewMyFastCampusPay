@@ -21,9 +21,9 @@ public class CheckedRegisteredBankAccountEvent {
 
     private String firmbankingRequestAggregateIdentifier;
 
-    private String fromBankName;
+    private String fromBankName;  // 고객 계좌
 
-    private String fromBankAccountNumber;
+    private String fromBankAccountNumber; // 고객 계좌 번호
 
     @Override
     public String toString() {

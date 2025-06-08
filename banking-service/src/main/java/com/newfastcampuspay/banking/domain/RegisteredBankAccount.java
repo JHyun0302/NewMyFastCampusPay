@@ -32,7 +32,7 @@ public class RegisteredBankAccount {
             RegisteredBankAccount.BankName bankName,
             RegisteredBankAccount.BankAccountNumber bankAccountNumber,
             RegisteredBankAccount.LinkedStatusIsValid linkedStatusIsValid,
-            RegisteredBankAccount.AggreagteIdentifier aggregateIdentifier
+            RegisteredBankAccount.AggregateIdentifier aggregateIdentifier
     ) {
 
         return new RegisteredBankAccount(
@@ -86,8 +86,8 @@ public class RegisteredBankAccount {
     }
 
     @Value
-    public static class AggreagteIdentifier {
-        public AggreagteIdentifier(String value) {
+    public static class AggregateIdentifier {
+        public AggregateIdentifier(String value) {
             this.aggregateIdentifier = value;
         }
         String aggregateIdentifier;

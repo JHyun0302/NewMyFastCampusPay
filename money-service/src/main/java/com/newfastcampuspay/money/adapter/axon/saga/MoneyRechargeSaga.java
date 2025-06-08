@@ -8,6 +8,7 @@ import com.newfastcampuspay.common.event.RollbankFirmbankingRequestCommand;
 import com.newfastcampuspay.money.adapter.axon.event.RechargingRequestCreatedEvent;
 import com.newfastcampuspay.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
+import com.newfastcampuspay.money.domain.MemberMoney.MembershipId;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -39,6 +40,7 @@ public class MoneyRechargeSaga {
     /**
      * 등록된 은행 계좌인지 체크를 위해 외부 은행과 통신
      * associateProperty : 여러 saga가 존재할 때, 메모리에서 saga를 구분하기 위한 구분자
+     *  - rechargingRequestId : 1개의 충전 요청 saga에 대해 1개만 생성 (PK)
      */
     @StartSaga
     @SagaEventHandler(associationProperty = "rechargingRequestId")
@@ -55,7 +57,7 @@ public class MoneyRechargeSaga {
 
         // "충전 요청"이 시작되었다.
 
-        // 뱅킹의 계좌 등록 여부 확인하기. (RegisteredBankAccount 어그리거트 활용해서..)
+        // 뱅킹의 계좌 등록 여부 확인하기. (RegisteredBankAccountAggregate 활용해서..)
         // CheckRegisteredBankAccountCommand -> Check Bank Account
         // Axon server를 통해 Money svc -> Banking svc 호출. 즉, money 뿐만 아니라 다른 서비스에서도 이용하므로 Common에 Event 정의!
 
@@ -63,8 +65,8 @@ public class MoneyRechargeSaga {
         commandGateway.send(new CheckRegisteredBankAccountCommand(
                 event.getRegisteredBankAccountAggregateIdentifier(),
                 event.getRechargingRequestId(),
-                event.getMembershipId(),
                 checkRegisteredBankAccountId,
+                event.getMembershipId(),
                 event.getBankName(),
                 event.getBankAccountNumber(),
                 event.getAmount())
@@ -81,7 +83,7 @@ public class MoneyRechargeSaga {
     }
 
     /**
-     * 외부 은행 응답에 따라 송금 요청 개시
+     * 외부 은행 응답에 따라 펌배뱅킹(송금) 요청 개시
      */
     @SagaEventHandler(associationProperty = "checkRegisteredBankAccountId")
     public void handle(CheckedRegisteredBankAccountEvent event) {
@@ -103,10 +105,10 @@ public class MoneyRechargeSaga {
                 event.getFirmbankingRequestAggregateIdentifier(),
                 event.getRechargingRequestId(),
                 event.getMembershipId(),
-                event.getFromBankName(),
-                event.getFromBankAccountNumber(),
-                "fastcampus",
-                "123456789",
+                event.getFromBankName(), // 고객 계좌
+                event.getFromBankAccountNumber(), // 고객 계좌 번호
+                "fastcampus", //법인 계좌
+                "123456789", //법인 계좌 번호
                 event.getAmount()
         )).whenComplete(
                 (result, throwable) -> {
@@ -136,9 +138,11 @@ public class MoneyRechargeSaga {
         }
 
         //DB Update 명령
-//        MemberMoneyJpaEntity resultEntity = increaseMoneyPort.increaseMoney(
-//                new MembershipId(event.getMembershipId()), event.getMoneyAmount());
-        MemberMoneyJpaEntity resultEntity = null;
+        MemberMoneyJpaEntity resultEntity = increaseMoneyPort.increaseMoney(
+                new MembershipId(event.getMembershipId()), event.getMoneyAmount());
+
+        //DB Update 실패 -> 보상 트랜잭션(롤백) 수행
+//        MemberMoneyJpaEntity resultEntity = null;
 
         if (resultEntity == null) {
             //실패 시, 롤백 이벤트
@@ -169,6 +173,7 @@ public class MoneyRechargeSaga {
         }
     }
 
+    // 롤백 완료 시, Saga 끝
     @EndSaga
     @SagaEventHandler(associationProperty = "rollbackFirmbankingId")
     public void handle(RollbankFirmbankingRequestCommand event) {

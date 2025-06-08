@@ -4,10 +4,8 @@ import com.newfastcampuspay.common.CountDownLatchManager;
 import com.newfastcampuspay.common.RechargingMoneyTask;
 import com.newfastcampuspay.common.SubTask;
 import com.newfastcampuspay.common.UseCase;
-import com.newfastcampuspay.money.adapter.axon.command.IncreaseMemberMoneyCommand;
 import com.newfastcampuspay.money.adapter.axon.command.MemberMoneyCreatedCommand;
 import com.newfastcampuspay.money.adapter.axon.command.RechargingMoneyRequestCreateCommand;
-import com.newfastcampuspay.money.adapter.axon.event.RechargingRequestCreatedEvent;
 import com.newfastcampuspay.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.newfastcampuspay.money.adapter.out.persistence.MoneyChangingRequestMapper;
 import com.newfastcampuspay.money.application.port.in.CreateMemberMoneyCommand;
@@ -20,7 +18,6 @@ import com.newfastcampuspay.money.application.port.out.GetMembershipPort;
 import com.newfastcampuspay.money.application.port.out.IncreaseMoneyPort;
 import com.newfastcampuspay.money.application.port.out.SendRechargingMoneyTaskPort;
 import com.newfastcampuspay.money.domain.MemberMoney;
-import com.newfastcampuspay.money.domain.MemberMoney.MemberMoneyId;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -186,9 +183,8 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
         //Saga 의 시작을 나타내는 커맨드!
         //RechargingMoneyRequestCreateCommand
         commandGateway.send(new RechargingMoneyRequestCreateCommand(memberMoneyAggregateIdentifier,
-                UUID.randomUUID().toString(),
-                command.getTargetMembershipId(),
-                command.getAmount())).whenComplete(
+                UUID.randomUUID().toString(), command.getTargetMembershipId(), command.getAmount()))
+                .whenComplete(
                 (result, throwable) -> {
                     if (throwable != null) {
                         log.error("throwable : {}", throwable);

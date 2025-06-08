@@ -1,7 +1,5 @@
 package com.newfastcampuspay.banking.application.service;
 
-import static com.newfastcampuspay.banking.domain.RegisteredBankAccount.*;
-
 import com.newfastcampuspay.banking.adapter.axon.command.CreateRegisteredBankAccountCommand;
 import com.newfastcampuspay.banking.adapter.out.external.bank.BankAccount;
 import com.newfastcampuspay.banking.adapter.out.external.bank.GetBankAccountRequest;
@@ -17,7 +15,7 @@ import com.newfastcampuspay.banking.application.port.out.MembershipStatus;
 import com.newfastcampuspay.banking.application.port.out.RegisterBankAccountPort;
 import com.newfastcampuspay.banking.application.port.out.RequestBankAccountInfoPort;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount;
-import com.newfastcampuspay.banking.domain.RegisteredBankAccount.AggreagteIdentifier;
+import com.newfastcampuspay.banking.domain.RegisteredBankAccount.AggregateIdentifier;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.BankAccountNumber;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.BankName;
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount.LinkedStatusIsValid;
@@ -77,7 +75,7 @@ public class RegisterBankAccountService implements RegisterBankAccountUseCase, G
                     new BankName(command.getBankName()),
                     new BankAccountNumber(command.getBankAccountNumber()),
                     new LinkedStatusIsValid(command.isValid()),
-                    new AggreagteIdentifier("")
+                    new AggregateIdentifier("")
             );
 
             return mapper.mapToDomainEntity(savedAccountInfo);
@@ -96,13 +94,13 @@ public class RegisterBankAccountService implements RegisterBankAccountUseCase, G
                         throw new RuntimeException(throwable);
                     } else {
                         // 정상적으로 이벤트 소싱.
-                        // -> registeredBankAccount
+                        // -> registeredBankAccount 를 insert
                         registerBankAccountPort.createRegisteredBankAccount(
                                 new MembershipId(command.getMembershipId() + ""),
                                 new BankName(command.getBankName()),
                                 new BankAccountNumber(command.getBankAccountNumber()),
                                 new LinkedStatusIsValid(command.isValid()),
-                                new AggreagteIdentifier(result.toString())
+                                new AggregateIdentifier(result.toString())
                         );
                     }
                 }

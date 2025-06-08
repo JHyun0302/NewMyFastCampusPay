@@ -63,6 +63,7 @@ public class FirmbankingRequestAggregate {
         toBankAccountNumber = event.getToBankAccountNumber();
     }
 
+    // Firmbanking Update Handler
     @CommandHandler
     public String handle(UpdateFirmbankingRequestCommand command) {
         log.info("UpdateFirmbankingRequestCommand Handler");
@@ -89,12 +90,12 @@ public class FirmbankingRequestAggregate {
         // from -> to (고객 계좌에서 법인 계좌로 송금)
         // 펌뱅킹 수행!
         firmbankingPort.createFirmbankingRequest(
-                new FirmbankingRequest.FromBankName(command.getToBankName()),
+                new FirmbankingRequest.FromBankName(command.getToBankName()), // 고객 계좌
                 new FirmbankingRequest.FromBankAccountNumber(command.getToBankAccountNumber()),
-                new FirmbankingRequest.ToBankName("fastcampus-bank"),
+                new FirmbankingRequest.ToBankName("fastcampus-bank"), // 법인 계좌
                 new FirmbankingRequest.ToBankAccountNumber("123-333-9999"),
                 new FirmbankingRequest.MoneyAmount(command.getMoneyAmount()),
-                new FirmbankingRequest.FirmbankingStatus(0),
+                new FirmbankingRequest.FirmbankingStatus(0), // 0: 성공
                 new FirmbankingRequest.FirmbankingAggregateIdentifier(id)
         );
 
@@ -137,9 +138,9 @@ public class FirmbankingRequestAggregate {
 
         // rollback 수행 (법인 계좌 -> 고객 계좌 펌뱅킹)
         firmbankingPort.createFirmbankingRequest(
-                new FirmbankingRequest.FromBankName("fastcampus"),
+                new FirmbankingRequest.FromBankName("fastcampus"), // 법인 계좌
                 new FirmbankingRequest.FromBankAccountNumber("123-333-9999"),
-                new FirmbankingRequest.ToBankName(command.getBankName()),
+                new FirmbankingRequest.ToBankName(command.getBankName()), // 고객 계좌
                 new FirmbankingRequest.ToBankAccountNumber(command.getBankAccountNumber()),
                 new FirmbankingRequest.MoneyAmount(command.getMoneyAmount()),
                 new FirmbankingRequest.FirmbankingStatus(0),

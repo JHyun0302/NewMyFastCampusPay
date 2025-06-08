@@ -1,7 +1,7 @@
 package com.newfastcampuspay.banking.adapter.out.persistence;
 
 import com.newfastcampuspay.banking.domain.RegisteredBankAccount;
-import com.newfastcampuspay.banking.domain.RegisteredBankAccount.AggreagteIdentifier;
+import com.newfastcampuspay.banking.domain.RegisteredBankAccount.AggregateIdentifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ public class RegisterBankAccountMapper {
                 new RegisteredBankAccount.BankName(registeredBankAccountJpaEntity.getBankName()),
                 new RegisteredBankAccount.BankAccountNumber(registeredBankAccountJpaEntity.getBankAccountNumber()),
                 new RegisteredBankAccount.LinkedStatusIsValid(registeredBankAccountJpaEntity.isLinkedStatusIsValid()),
-                new AggreagteIdentifier(registeredBankAccountJpaEntity.getAggregateIdentifier())
+                new AggregateIdentifier(registeredBankAccountJpaEntity.getAggregateIdentifier())
         );
     }
 }
