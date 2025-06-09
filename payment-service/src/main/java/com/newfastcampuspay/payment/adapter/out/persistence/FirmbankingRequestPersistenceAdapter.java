@@ -3,7 +3,6 @@ package com.newfastcampuspay.payment.adapter.out.persistence;
 import com.newfastcampuspay.common.PersistenceAdapter;
 import com.newfastcampuspay.payment.application.port.out.CreatePaymentPort;
 import com.newfastcampuspay.payment.domain.Payment;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
