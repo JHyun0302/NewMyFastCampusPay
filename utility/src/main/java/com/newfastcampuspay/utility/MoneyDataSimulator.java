@@ -32,8 +32,8 @@ public class MoneyDataSimulator {
 
         while (true) {
             // 증액 머니, 감액 머니
-            int amount = random.nextInt(20001) - 10000; // 0 ~ 10,000
-            int targetMembershipId = random.nextInt(1000) + 1; // 1 ~ 10,000
+            int amount = random.nextInt(20001); // 1 ~ 20,000
+            int targetMembershipId = random.nextInt(10001) + 1; // 1 ~ 10,000
 
             registerAccountSimulator(REGISTER_ACCOUNT_API_ENDPOINT, targetMembershipId);
             createMemberMoneySimulator(CREATE_MONEY_API_ENDPOINT, targetMembershipId);
