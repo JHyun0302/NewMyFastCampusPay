@@ -46,14 +46,12 @@ public class MoneyRechargeSaga {
     @SagaEventHandler(associationProperty = "rechargingRequestId")
     public void handle(RechargingRequestCreatedEvent event) {
         log.info("RechargingRequestCreatedEvent Start saga");
-        String rechargingRequestId = event.getRechargingRequestId();
-
         /**
          * 이전까지는 associatedProperty의 구분자를 이용했고
          * 앞으로 handle 동작에서는 어떤 것을 associate Key로 활용할지 정의
          */
         String checkRegisteredBankAccountId = UUID.randomUUID().toString();
-        SagaLifecycle.associateWith("checkRegisteredBankAccountId", rechargingRequestId);
+        SagaLifecycle.associateWith("checkRegisteredBankAccountId", checkRegisteredBankAccountId);
 
         // "충전 요청"이 시작되었다.
 
