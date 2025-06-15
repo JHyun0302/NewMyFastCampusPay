@@ -1,7 +1,9 @@
-.PHONY: run
+.PHONY: run build
 
-run:
-	@echo "Running ./gradlew docker"
-	@./gradlew
+run: build
 	@echo "Running docker-compose up -d"
 	@docker-compose up -d
+
+build:
+	@echo "Running ./gradlew clean build -x test"
+	@./gradlew clean build -x test
