@@ -13,5 +13,5 @@ public class Membership { // for banking-service (!= Membership-service)
     private String email;
     private String address;
     private boolean isValid;
-    private boolean isCrop;
+    private boolean isCorp;
 }
