@@ -3,8 +3,8 @@ package com.newfastcampuspay.membership.application.service;
 import com.newfastcampuspay.common.UseCase;
 import com.newfastcampuspay.membership.adapter.out.persistence.MembershipJpaEntity;
 import com.newfastcampuspay.membership.adapter.out.persistence.MembershipMapper;
-import com.newfastcampuspay.membership.application.port.in.FindMembershipByAddressCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipCommand;
+import com.newfastcampuspay.membership.application.port.in.FindMembershipListByAddressCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipUseCase;
 import com.newfastcampuspay.membership.application.port.out.FindMembershipPort;
 import com.newfastcampuspay.membership.domain.Membership;
@@ -31,7 +31,7 @@ public class FindMembershipService implements FindMembershipUseCase {
     }
 
     @Override
-    public List<Membership> findMembershipListByAddress(FindMembershipByAddressCommand command) {
+    public List<Membership> findMembershipListByAddress(FindMembershipListByAddressCommand command) {
         List<MembershipJpaEntity> membershipJpaEntities = findMembershipPort.findMembershipListByAddress(
                 new MembershipAddress(command.getAddressName()));
         List<Membership> memberships = new ArrayList<>();

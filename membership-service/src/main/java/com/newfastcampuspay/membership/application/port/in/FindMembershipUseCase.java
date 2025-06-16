@@ -7,5 +7,5 @@ public interface FindMembershipUseCase {
 
     Membership findMembership(FindMembershipCommand command);
 
-    List<Membership> findMembershipListByAddress(FindMembershipByAddressCommand command);
+    List<Membership> findMembershipListByAddress(FindMembershipListByAddressCommand command);
 }

@@ -1,8 +1,8 @@
 package com.newfastcampuspay.membership.adapter.in.web;
 
 import com.newfastcampuspay.common.WebAdapter;
-import com.newfastcampuspay.membership.application.port.in.FindMembershipByAddressCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipCommand;
+import com.newfastcampuspay.membership.application.port.in.FindMembershipListByAddressCommand;
 import com.newfastcampuspay.membership.application.port.in.FindMembershipUseCase;
 import com.newfastcampuspay.membership.domain.Membership;
 import java.util.List;
@@ -31,7 +31,7 @@ public class FindMembershipController {
 
     @GetMapping("/membership/address/{addressName}")
     ResponseEntity<List<Membership>> findMembershipListByAddress(@PathVariable String addressName) {
-        FindMembershipByAddressCommand command = FindMembershipByAddressCommand.builder()
+        FindMembershipListByAddressCommand command = FindMembershipListByAddressCommand.builder()
                 .addressName(addressName)
                 .build();
 

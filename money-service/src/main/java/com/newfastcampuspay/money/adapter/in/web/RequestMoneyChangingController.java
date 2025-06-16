@@ -13,8 +13,6 @@ import com.newfastcampuspay.money.domain.MemberMoney;
 import com.newfastcampuspay.money.domain.MoneyChangingRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
