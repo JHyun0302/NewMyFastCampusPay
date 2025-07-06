@@ -270,8 +270,10 @@ services:
 
   money-query-service:
     image: new-fastcampus-pay-money-query-service:1.0.0-SNAPSHOT
+    build:
+      context: ./money-query-service
     networks:
-      - fastcampuspay_network
+      - new_fastcampuspay_network
     ports:
       - "8087:8080"
     restart: always
@@ -283,10 +285,10 @@ services:
       - AXON_SERIALIZER_EVENTS=jackson
       - AXON_SERIALIZER_MESSAGES=jackson
       - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/fastcampus_pay?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/new_fastcampus_pay?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=fastcampus.logging.out.stdout
